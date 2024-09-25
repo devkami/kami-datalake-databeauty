@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  streamlit:
+    build: /home/ubuntu/kami-datalake/services/automacao_perf_vendedor
+    ports:
+      - "8501:8501"
+    networks:
+      - proxy
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.streamlit.rule=Host(`databeauty.aws.kamico.com.br`)"
+      - "traefik.http.routers.streamlit.entrypoints=websecure"
+      - "traefik.http.routers.streamlit.tls.certresolver=myresolver"
+      - "traefik.http.routers.streamlit-www.rule=Host(`www.databeauty.aws.kamico.com.br`)"
+      - "traefik.http.routers.streamlit-www.entrypoints=websecure"
+      - "traefik.http.routers.streamlit-www.tls.certresolver=myresolver"
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true
